@@ -89,117 +89,69 @@ int CSOFFSET[5] = {30,30,0,-15,-30};
 #define IDLERMOTORDELAY  540     //540 useconds      (idler motor)  was at '500' on 10.13.18
 #define EXTRUDERMOTORDELAY 60//50     // 150 useconds    (controls filament feed speed to the printer)
 #define COLORSELECTORMOTORDELAY 60 // 60 useconds    (selector motor)
-
-#define SKRMINI
-//#define GT2560
-
-
 #define filamentSwitchON 0
 //#define FILAMENTSWITCH_BEFORE_EXTRUDER // turn on if the filament switch is before the extruder, turn off for the mk3s-mmu filament switch
 #define FILAMENTSWITCH_ON_EXTRUDER // turn on if the filament switch on is the extruder, turn on for the mk3s-mmu filament switch
 
-#ifdef GT2560
-// added this pin as a debug pin (lights a green LED so I can see the 'C0' command in action
-//Y_MIN_PIN
-#define greenLED 26
-
-// modified code on 10.2.18 to accomodate RAMPS 1.6 board mapping
-//
-
-// PIN Y
-#define idlerDirPin  33
-#define idlerStepPin 31
-#define idlerEnablePin 29
-
-
-// PIN Z
-#define extruderDirPin  39 //  pin 48 for extruder motor direction pin
-#define extruderStepPin  37 //  pin 48 for extruder motor stepper motor pin
-#define extruderEnablePin 35 //  pin A8 for extruder motor rst/sleep motor pin
-
-//PIN X
-#define colorSelectorDirPin  23 //color selector stepper motor (driven by trapezoidal screw)
-#define colorSelectorStepPin 25
-#define colorSelectorEnablePin 27
-
-
-//BROWN = +5V
-//BLUE = GND
-//BLACK = SIGNAL
-//SERVo PIN GT2560
-#define findaPin  11
-
-// Z_MIN_PIN
-#define colorSelectorEnstop 30
-
-// Z_MAX_PIN
-#define filamentSwitch 32
-
-
-// https://www.lesimprimantes3d.fr/forum/uploads/monthly_2018_10/Epson_29102018163351.jpg.9b3dec82b6691ac5af5c7ea2451e41b4.jpg
-//Hardware Serial1 : 19 (RX) and 18 (TX)
-// https://reprap.org/mediawiki/images/f/ff/MKS_MINI12864_LCD_controller_pin_out_-_signal_names.jpg
-//https://www.geeetech.com/forum/download/file.php?id=3997&sid=b5aaf40b7a0b35fb5403798518f426b9
-// 0 1 2 3 4
-// 5 6 7 8 9
-//
-// https://reprap.org/mediawiki/images/5/51/RRD_FULL_GRAPHIC_SMART_CONTROLER_SCHEMATIC.pdf
-//
-// 19 : BTN_ENC -> EXP1 pin 0
-// 18 : BEEPER_PIN -> EXP1 pin 5
-//
-//SoftwareSerial Serial1(10,11); // RX, TX (communicates with the MK3 controller boards
-
-
-//SKR
-// P.015 and P.16 (UART1)
-#endif
+#include "boards.h" 
+//#define SKRMINI
+//#define GT2560
+#define SANGUINOLOLU_V_1_2
 
 #ifdef SKRMINI
-// https://github.com/bigtreetech/BIGTREETECH-SKR-MINI-V1.1/blob/master/hardware/SKR-mini-V1.1-PIN.pdf
-// added this pin as a debug pin (lights a green LED so I can see the 'C0' command in action
-// Y_MIN_PIN
-#define greenLED PC1
-
-// modified code on 10.2.18 to accomodate RAMPS 1.6 board mapping
-//
-
-
-//PIN X
-#define colorSelectorStepPin PC6
-#define colorSelectorDirPin  PC7 //color selector stepper motor (driven by trapezoidal screw)
-#define colorSelectorEnablePin PB15
-
-// PIN Y
-#define idlerStepPin PB13
-#define idlerDirPin  PB14
-#define idlerEnablePin PB12
-
-
-// PIN E
-#define extruderStepPin  PC5 
-#define extruderDirPin  PB0 
-#define extruderEnablePin PC4
-
-
-//BROWN = +5V
-//BLUE = GND
-//BLACK = SIGNAL
-// X_MIN_PIN
-#define findaPin  PC2
-
-// Z_MIN_PIN
-#define colorSelectorEnstop PC0
-
-// Z_MAX_PIN
-#define filamentSwitch PC3
+  #include "pins_BTT_SKR_MINI_V1_1.h"
+#endif
+#ifdef GT2560
+  #include "pins_GT2560_V3.h"
+#endif
+#ifdef SANGUINOLOLU_V_1_2
+  #include "pins_SANGUINOLOLU_11.h"
 #endif
 
-//SKR MINI
-//TFT PIN
-// RST RX0 TX0 GND +5V
+  #define greenLED HEATER_BED_PIN 
+  
+  //ex PIN X now
+  // Z-Connector      
+  #define colorSelectorDirPin   Z_DIR_PIN //color selector stepper motor (driven by trapezoidal screw)
+  #define colorSelectorStepPin  Z_STEP_PIN 
+  #define colorSelectorEnablePin  Z_ENABLE_PIN
+  
+  // PIN Y 
+  #define idlerDirPin   Y_DIR_PIN 
+  #define idlerStepPin  Y_STEP_PIN
+  #define idlerEnablePin  Y_ENABLE_PIN 
+  
+  // PIN E
+// E-Connector    
+  #define extruderDirPin    E0_DIR_PIN    //  pin 48 for extruder motor direction pin
+  #define extruderStepPin   E0_STEP_PIN   //  pin 48 for extruder motor stepper motor pin
+  #define extruderEnablePin E0_ENABLE_PIN //14 //  pin A8 for extruder motor rst/sleep motor pin
+ 
+  //BROWN = +5V
+  //BLUE = GND
+  //BLACK = SIGNAL
+  // X_MIN_PIN
+// Endstop X Connector
+#ifndef X_STOP_PIN
+    #define findaPin X_MIN_PIN   
+#else
+    #define findaPin  X_STOP_PIN
+#endif  
 
-//SKR
-// P.015 and P.16 (UART1)
+  // Z_MIN_PIN
+//  Endstop Z Connector 
+#ifndef Z_STOP_PIN
+    #define colorSelectorEnstop Z_MIN_PIN   
+#else
+    #define colorSelectorEnstop Z_STOP_PIN
+#endif
+  
+  // Z_MAX_PIN
+//  Endstop Y Connector 
+#ifndef Y_STOP_PIN
+  #define filamentSwitch Z_MAX_PIN      // this switch was added on 10.1.18 to help with filament loading (X- signal on the RAMPS board)
+#else
+  #define filamentSwitch Y_STOP_PIN       // this switch was added on 10.1.18 to help with filament loading (X- signal on the RAMPS board)
+#endif
 
 #endif // CONFIG_H
